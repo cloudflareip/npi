@@ -1,7 +1,47 @@
-// 这个文件会自动从 src 目录编译生成
-import { checkHealth } from '../src/health.js'
-import { selectSpace } from '../src/router.js'
-import { reportStatus } from '../src/monitor.js'
+// 空间配置
+const SPACES = [
+  {
+    url: 'https://one887-ki88.hf.space',
+    weight: 1
+  },
+  {
+    url: 'https://one887-ki882.hf.space',
+    weight: 1
+  },
+  {
+    url: 'https://one887-ki883.hf.space',
+    weight: 1
+  }
+];
+
+// 缓存配置
+const HEALTH_CACHE_TTL = 30; // 30秒缓存
+const healthCache = new Map();
+
+// 健康检查
+async function checkHealth(space) {
+  try {
+    const response = await fetch(`${space.url}/api/v1/health`, {
+      method: 'GET',
+      headers: {
+        'User-Agent': 'N8N-Worker-HealthCheck/1.0'
+      },
+      timeout: 5000
+    });
+    return response.ok;
+  } catch (error) {
+    console.error(`Health check failed for ${space.url}:`, error);
+    return false;
+  }
+}
+
+// 选择空间
+function selectSpace(healthySpaces) {
+  if (!healthySpaces || healthySpaces.length === 0) {
+    throw new Error('No healthy spaces available');
+  }
+  return healthySpaces[Math.floor(Math.random() * healthySpaces.length)];
+}
 
 // Worker 配置
 export default {
@@ -35,7 +75,6 @@ export default {
 
       // 2. 没有健康的空间
       if (healthySpaces.length === 0) {
-        await reportStatus('error', 'All spaces are unhealthy');
         return new Response('Service Unavailable', { status: 503 });
       }
 
