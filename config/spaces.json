@@ -1,0 +1,24 @@
+{
+  "spaces": [
+    {
+      "url": "https://one887-ki88.hf.space",
+      "weight": 1
+    },
+    {
+      "url": "https://one887-ki882.hf.space",
+      "weight": 1
+    },
+    {
+      "url": "https://one887-ki883.hf.space",
+      "weight": 1
+    }
+  ],
+  "monitoring": {
+    "checkInterval": 60,  // 检查间隔（秒）
+    "timeout": 5000,      // 超时时间（毫秒）
+    "alertThresholds": {
+      "responseTime": 2000,  // 响应时间警告阈值（毫秒）
+      "errorRate": 0.1      // 错误率警告阈值（10%）
+    }
+  }
+}
